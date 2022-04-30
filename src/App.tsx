@@ -1,8 +1,24 @@
 import React from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './css/App.css';
+import Service from './Service';
+import User from './user/User'
+import ServerError from './ServerError';
+import UserRequest from './user/UserRequest';
 
 function App() {
+  const dev = new User();
+  dev.username = "dev-user";
+  dev.password = "development";
+  const req = new UserRequest();
+  req.username = dev.username;
+  const service = new Service(dev.username, dev.password);
+  const response = service.post<User>("user/details", req);
+  response.then( user => {
+    console.log(user);
+  })
+  .catch(error => {console.log(error);})
+
   return (
     <div className="App">
       <header className="App-header">
