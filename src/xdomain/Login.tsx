@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Button, Card, TextField } from '@mui/material';
+import React from 'react';
+import { Button, TextField } from '@mui/material';
 import API from 'api/Rest';
 import User from 'user/User'
 
 function Login() {
-    const [user, setUser] = useState(new User());
+    const user:User = new User();
 
     function handleLogin(event: React.SyntheticEvent) {
         event.preventDefault();
@@ -20,11 +20,7 @@ function Login() {
                 required
                 id='outlined-username'
                 label='Username'
-                value={user.username}
-                onChange={e => setUser( (user) => {
-                    user.username = e.target.value;
-                    return user;
-                })}
+                onChange={e => user.username = e.target.value}
                 />
                 <TextField
                 required
@@ -32,11 +28,7 @@ function Login() {
                 label='Password'
                 type="password"
                 autoComplete="current-password"
-                value={user.password}
-                onChange={e => setUser( (user) => {
-                    user.password = e.target.value;
-                    return user;
-                })}
+                onChange={e => user.password = e.target.value}
                 />
                 <Button variant="contained" type="submit">Login</Button>
             </form>
