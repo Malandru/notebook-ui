@@ -42,7 +42,6 @@ class Service {
         else
             body = JSON.stringify(body);
         const options = {headers: this.headers, method, body};
-        console.log(options)
         
         let response = await fetch(url, options);
         if (response.ok) {

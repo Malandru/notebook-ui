@@ -1,4 +1,4 @@
-import User from "../user/User";
+import User from "user/User";
 import Service from "./Service";
 
 enum URL {
