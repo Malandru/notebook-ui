@@ -1,16 +1,31 @@
 import logo from './logo.svg';
 import './css/App.css';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import Login from 'xdomain/Login';
+import User from 'user/User';
 
 function App() {
   return (
     <BrowserRouter>
     <Routes>
-      <Route path='/' element={<Login />} />
-      <Route path='/app' element={<ExampleApp />} />
+      <Route path='/' element={<HomePage />} />
+      <Route path='/login' element={<Login />} />
     </Routes>
     </BrowserRouter>
+  );
+}
+
+function HomePage() {
+  const location = useLocation();
+  const user:User = location.state as User;
+
+  if(user == null || !user.enabled)
+    return Login();
+
+  return (
+    <div>
+      hello world
+    </div>
   );
 }
 

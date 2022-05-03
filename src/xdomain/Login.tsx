@@ -2,14 +2,18 @@ import React from 'react';
 import { Button, TextField } from '@mui/material';
 import API from 'api/Rest';
 import User from 'user/User'
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const user:User = new User();
+    const navigate = useNavigate();
 
     function handleLogin(event: React.SyntheticEvent) {
         event.preventDefault();
         const response = API.login(user);
-        response.then(user => console.log(user))
+        response.then(user => {
+            navigate('/', {state: user})
+        })
             .catch(serverError => console.log(serverError));
     }
 
