@@ -1,31 +1,79 @@
 import logo from './logo.svg';
 import './css/App.css';
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
-import Login from 'xdomain/Login';
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import Login from 'user/Login';
 import User from 'user/User';
+import { Avatar, Collapse, Container, createTheme, List, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, ThemeProvider } from '@mui/material';
+import { ExpandLess, ExpandMore, Send, StarBorder, Title, Work } from '@mui/icons-material';
+import { useState } from 'react';
 
 function App() {
   return (
     <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<HomePage />} />
-      <Route path='/login' element={<Login />} />
-    </Routes>
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/login' element={<Login />} />
+      </Routes>
     </BrowserRouter>
   );
 }
 
 function HomePage() {
   const location = useLocation();
-  const user:User = location.state as User;
+  const [open, setOpen] = useState(false);
 
-  if(user == null || !user.enabled)
+  if (!location.state)
     return Login();
 
+  const user: User = location.state as User;
+  if (user == null || !user.enabled)
+    return Login();
+
+  function handleExpand() {
+    setOpen(!open);
+  }
+
   return (
-    <div>
-      hello world
-    </div>
+    <ThemeProvider theme={createTheme()}>
+      <Container component="main" maxWidth="xs">
+        <List
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              Nested List Items
+            </ListSubheader>
+          }
+        >
+          <ListItemButton>
+            <ListItemIcon>
+              <Send />
+            </ListItemIcon>
+            <ListItemText primary="Sent mail" />
+          </ListItemButton>
+          <ListItemButton>
+            <ListItemAvatar>
+              <Avatar>
+                <Work />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Work" secondary="Jan 7, 2014" />
+          </ListItemButton>
+          <ListItemButton onClick={handleExpand}>
+            <ListItemText primary="Inbox" />
+            {open ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <StarBorder />
+                </ListItemIcon>
+                <ListItemText primary="Starred" />
+              </ListItemButton>
+            </List>
+          </Collapse>
+        </List>
+      </Container>
+    </ThemeProvider>
   );
 }
 
