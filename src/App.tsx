@@ -1,10 +1,11 @@
 import logo from './logo.svg';
 import './css/App.css';
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Login from 'user/Login';
 import User from 'user/User';
+import Session from 'user/Session'
 import { Avatar, Collapse, Container, createTheme, List, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, ThemeProvider } from '@mui/material';
-import { ExpandLess, ExpandMore, Send, StarBorder, Title, Work } from '@mui/icons-material';
+import { ExpandLess, ExpandMore, Send, StarBorder, Work } from '@mui/icons-material';
 import { useState } from 'react';
 
 function App() {
@@ -19,15 +20,12 @@ function App() {
 }
 
 function HomePage() {
-  const location = useLocation();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
-  if (!location.state)
-    return Login();
-
-  const user: User = location.state as User;
-  if (user == null || !user.enabled)
-    return Login();
+  const user: User | undefined = Session.restoreUser();
+  if (!user)
+    navigate('/login');
 
   function handleExpand() {
     setOpen(!open);
@@ -39,7 +37,7 @@ function HomePage() {
         <List
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
-              Nested List Items
+              Nested List Items from {user?.fullName}
             </ListSubheader>
           }
         >

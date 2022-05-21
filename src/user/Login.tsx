@@ -5,6 +5,7 @@ import User from 'user/User'
 import { useNavigate } from 'react-router-dom';
 import { LockOutlined } from '@mui/icons-material';
 import { EventAlert, EventNotification, UI } from 'xdomain/EventAlert';
+import Session from 'user/Session';
 
 function Login() {
   const user: User = new User();
@@ -18,7 +19,8 @@ function Login() {
     setEventAlert(eventAlert.asChangedUI(UI.LOADING));
     const response = API.login(user);
     response.then(user => {
-      navigate('/', { state: user })
+      Session.storeUser(user);
+      navigate('/');
     })
       .catch(serverError => {
         console.log(serverError);
