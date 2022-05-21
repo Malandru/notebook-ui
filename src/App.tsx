@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './css/App.css';
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from 'user/Login';
 import User from 'user/User';
 import Session from 'user/Session'
@@ -21,11 +21,11 @@ function App() {
 
 function HomePage() {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
 
   const user: User | undefined = Session.restoreUser();
-  if (!user)
-    navigate('/login');
+  if (!user) {
+    return ( <Navigate to="/login" /> );
+  }
 
   function handleExpand() {
     setOpen(!open);
@@ -37,7 +37,7 @@ function HomePage() {
         <List
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
-              Nested List Items from {user?.fullName}
+              Nested List Items from {user.fullName}
             </ListSubheader>
           }
         >

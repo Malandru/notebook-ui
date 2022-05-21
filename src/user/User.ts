@@ -1,14 +1,20 @@
 class User
 {
-    userID!: number;
-    username!: string;
-    fullName!: string;
-    password!: string;
+    userID: number;
+    username: string;
+    fullName: string;
+    password: string;
 
-    accountLocked!: boolean;
-    enabled!: boolean;
+    accountLocked: boolean;
+    enabled: boolean;
 
     constructor() {
+      this.userID = -1;
+      this.username = "unknown";
+      this.fullName = "NOT A USER";
+      this.password = "";
+      this.accountLocked = true;
+      this.enabled = false;
     }
 }
 
