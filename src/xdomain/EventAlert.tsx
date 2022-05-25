@@ -44,8 +44,7 @@ export class EventAlert {
   }
 
   asServerError(serverError: ServerError) {
-    const details = serverError.message.length > 0 ? serverError.message : 'Empty message';
-    this.config("TODO: Error from server", details, "error", true, UI.FAILED);
+    this.config(serverError.title, serverError.details, "error", true, UI.FAILED);
     return EventAlert.clone(this);
   }
 
