@@ -22,8 +22,8 @@ function App() {
 function HomePage() {
   const [open, setOpen] = useState(false);
 
-  const user: User | undefined = Session.restoreUser();
-  if (!user) {
+  const user: User = Session.restoreUser() ?? new User();
+  if (user.userID === null) {
     return ( <Navigate to="/login" /> );
   }
 
