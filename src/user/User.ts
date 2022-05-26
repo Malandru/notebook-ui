@@ -1,20 +1,22 @@
 class User {
-  userID: string;
-  username: string;
-  fullName: string;
-  password: string;
+  userID: string | null;
+  username: string | null;
+  fullName: string | null;
+  password: string  | null;
 
-  accountLocked: boolean;
-  enabled: boolean;
+  accountLocked: boolean | null;
+  enabled: boolean | null;
 
   constructor() {
-    this.userID = "";
-    this.username = "unknown";
-    this.fullName = "NOT A USER";
-    this.password = "";
-    this.accountLocked = true;
-    this.enabled = false;
+    this.userID = null;
+    this.username = null;
+    this.fullName = null;
+    this.password = null;
+    this.accountLocked = null;
+    this.enabled = null;
   }
 }
+
+export type IUser = Pick<User, "username" | "password">
 
 export default User;

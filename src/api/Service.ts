@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import User from "../user/User";
+import { IUser } from "user/User";
 import ServerError from "./ServerError";
 
 enum HTTP {
@@ -28,7 +28,7 @@ class Service {
     return this._instance || (this._instance = new this());
   }
 
-  setAuthorization(user: User) {
+  setAuthorization(user: IUser) {
     const basic = Buffer.from((user.username + ":" + user.password)).toString('base64');
     this.headers.Authorization = "Basic " + basic;
     user.password = "";

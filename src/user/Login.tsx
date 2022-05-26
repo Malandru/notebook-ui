@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Avatar, Box, Button, Checkbox, Container, createTheme, FormControlLabel, LinearProgress, Link, TextField, ThemeProvider, Typography } from '@mui/material';
 import API from 'api/Rest';
-import User from 'user/User'
+import { IUser } from 'user/User'
 import { useNavigate } from 'react-router-dom';
 import { LockOutlined } from '@mui/icons-material';
 import { EventAlert, EventNotification, UI } from 'xdomain/EventAlert';
 import Session from 'user/Session';
 
 function Login() {
-  const [formUser, setFormUser] = useState(new User());
+  const [formUser, setFormUser] = useState<IUser>({username: "", password: ""});
   const [eventAlert, setEventAlert] = useState(new EventAlert());
   const navigate = useNavigate();
 
