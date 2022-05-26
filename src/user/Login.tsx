@@ -8,16 +8,17 @@ import { EventAlert, EventNotification, UI } from 'xdomain/EventAlert';
 import Session from 'user/Session';
 
 function Login() {
-  const user: User = new User();
-  const navigate = useNavigate();
-
+  const [formUser, setFormUser] = useState(new User());
   const [eventAlert, setEventAlert] = useState(new EventAlert());
+  const navigate = useNavigate();
 
   function handleLogin(event: React.SyntheticEvent) {
     event.preventDefault();
-    console.log("processing request...");
+    console.log(formUser);
+
     setEventAlert(eventAlert.asChangedUI(UI.LOADING));
-    const response = API.login(user);
+    const response = API.login(formUser);
+
     response.then(user => {
       Session.storeUser(user);
       navigate('/');
@@ -53,7 +54,7 @@ function Login() {
               label="Username"
               name="username"
               autoFocus
-              onChange={e => user.username = e.target.value}
+              onChange={e => formUser.username = e.target.value}
             />
             <TextField
               margin="normal"
@@ -64,13 +65,14 @@ function Login() {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={e => user.password = e.target.value}
+              onChange={e => formUser.password = e.target.value}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
             <Button
+              disabled={eventAlert.hasProgress(UI.LOADING)}
               type="submit"
               fullWidth
               variant="contained"
