@@ -4,18 +4,31 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from 'user/Login';
 import User from 'user/User';
 import Session from 'user/Session'
-import { Avatar, Collapse, Container, createTheme, List, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, ThemeProvider } from '@mui/material';
-import { ExpandLess, ExpandMore, Send, StarBorder, Work } from '@mui/icons-material';
+import { AppBar, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Collapse, Container, createTheme, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Stack, ThemeProvider, Toolbar, Typography } from '@mui/material';
+import { ExpandLess, ExpandMore, Send, StarBorder, Work, FactCheckOutlined, AddOutlined, Menu, EditOutlined, FactCheck } from '@mui/icons-material';
 import { useState } from 'react';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/login' element={<Login />} />
-      </Routes>
-    </BrowserRouter>
+    <div>
+      <AppBar position="static">
+        <Toolbar variant="dense">
+          <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+            <Menu />
+          </IconButton>
+          <Typography variant="h6" color="inherit" component="div">
+            Notebook
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/login' element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
@@ -24,7 +37,7 @@ function HomePage() {
 
   const user: User = Session.restoreUser() ?? new User();
   if (user.userID === null) {
-    return ( <Navigate to="/login" /> );
+    return (<Navigate to="/login" />);
   }
 
   function handleExpand() {
@@ -32,46 +45,91 @@ function HomePage() {
   }
 
   return (
-    <ThemeProvider theme={createTheme()}>
-      <Container component="main" maxWidth="xs">
-        <List
-          subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-              Nested List Items from {user.fullName}
-            </ListSubheader>
+    <Container component="main" maxWidth="md">
+      <Card>
+        <CardHeader
+          avatar={
+            <Avatar>
+              <FactCheck />
+            </Avatar>
+          }
+          action={
+            <IconButton aria-label="edit">
+              <EditOutlined />
+            </IconButton>
+          }
+          title={
+            <Typography variant="h4" component="h2">
+              Budget Name
+            </Typography>
+          }
+          subheader="del 24 de enero de 2022 al 25 de febrero de 2022"
+        />
+        <CardContent>
+          <Stack direction="row" spacing="auto" component="span">
+            <Chip label="$1000" color="secondary" />
+            <Chip label="$200" color="warning" />
+            <Chip label="$1000" color="default" />
+            <Chip label="$800" color="primary" />
+          </Stack>
+        </CardContent>
+        <CardActions>
+          <Button size="small">Ver presupuesto</Button>
+        </CardActions>
+      </Card>
+      <List
+        subheader={
+          <ListSubheader component="div" id="nested-list-subheader">
+            Nested List Items from {user.fullName}
+          </ListSubheader>
+        }
+      >
+        <ListItem
+          secondaryAction={
+            <IconButton>
+              <AddOutlined />
+            </IconButton>
           }
         >
           <ListItemButton>
             <ListItemIcon>
-              <Send />
+              <FactCheckOutlined />
             </ListItemIcon>
-            <ListItemText primary="Sent mail" />
+            <ListItemText primary="Budget name" secondary="" />
+            <ExpandLess />
           </ListItemButton>
-          <ListItemButton>
-            <ListItemAvatar>
-              <Avatar>
-                <Work />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Work" secondary="Jan 7, 2014" />
-          </ListItemButton>
-          <ListItemButton onClick={handleExpand}>
-            <ListItemText primary="Inbox" />
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText primary="Starred" />
-              </ListItemButton>
-            </List>
-          </Collapse>
-        </List>
-      </Container>
-    </ThemeProvider>
+        </ListItem>
+
+        <ListItemButton>
+          <ListItemIcon>
+            <Send />
+          </ListItemIcon>
+          <ListItemText primary="Sent mail" />
+        </ListItemButton>
+        <ListItemButton>
+          <ListItemAvatar>
+            <Avatar>
+              <Work />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary="Work" secondary="Jan 7, 2014" />
+        </ListItemButton>
+        <ListItemButton onClick={handleExpand}>
+          <ListItemText primary="Inbox" />
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemIcon>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText primary="Starred" />
+            </ListItemButton>
+          </List>
+        </Collapse>
+      </List>
+    </Container>
   );
 }
 
