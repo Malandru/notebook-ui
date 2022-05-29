@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from 'user/Login';
 import User from 'user/User';
 import Session from 'user/Session'
-import { AppBar, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Collapse, Container, createTheme, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Stack, ThemeProvider, Toolbar, Typography } from '@mui/material';
+import { AppBar, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Collapse, Container, createTheme, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Stack, ThemeProvider, Toolbar, Typography } from '@mui/material';
 import { ExpandLess, ExpandMore, Send, StarBorder, Work, FactCheckOutlined, AddOutlined, Menu, EditOutlined, FactCheck } from '@mui/icons-material';
 import { useState } from 'react';
 
@@ -76,6 +76,25 @@ function HomePage() {
         <CardActions>
           <Button size="small">Ver presupuesto</Button>
         </CardActions>
+
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <Divider textAlign="left">Mensuales</Divider>
+            <ListItemButton>
+              <ListItemText primary="Concepto de transaccion" secondary="Cada dia 15 del mes | Category | Tag"/>
+              <Chip label="$50" color="secondary" />
+            </ListItemButton>
+            <ListItemButton>
+              <ListItemText primary="Concepto de transaccion" secondary="Cada dia 30 del mes | Category | Tag"/>
+              <Chip label="$50" color="secondary" />
+            </ListItemButton>
+            <Divider textAlign="left">Extraordinarios</Divider>
+            <ListItemButton>
+              <ListItemText primary="Concepto de transaccion" secondary="25-Mayo-2022 | Category | Tag | Cuenta"/>
+              <Chip label="$50" color="warning" />
+            </ListItemButton>
+          </List>
+        </Collapse>
       </Card>
       <List
         subheader={
