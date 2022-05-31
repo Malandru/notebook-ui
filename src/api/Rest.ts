@@ -8,7 +8,7 @@ enum URL {
 class API {
     private static service:Service = Service.getInstance();
 
-    public static login(user: User): Promise<User> {
+    public static login(user: IUser): Promise<User> {
         this.service.setAuthorization(user);
         return this.service.post<User>(URL.USER_DETAILS, user);
     }
