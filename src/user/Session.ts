@@ -10,9 +10,9 @@ class Session {
     localStorage.setItem(ITEM.USER, JSON.stringify(user));
   }
 
-  public static restoreUser(): User | undefined {
+  public static restoreUser(): User | null {
     const temp = localStorage.getItem(ITEM.USER);
-    return temp == null ? undefined : JSON.parse(temp) as User;
+    return temp == null ? null : JSON.parse(temp) as User;
   }
 }
 

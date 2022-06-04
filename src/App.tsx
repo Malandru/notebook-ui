@@ -6,7 +6,12 @@ import User from 'user/User';
 import Session from 'user/Session'
 import { AppBar, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Collapse, Container, createTheme, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Stack, ThemeProvider, Toolbar, Typography } from '@mui/material';
 import { ExpandLess, ExpandMore, Send, StarBorder, Work, FactCheckOutlined, AddOutlined, Menu, EditOutlined, FactCheck } from '@mui/icons-material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import SummaryCard from 'xdomain/Summary';
+import BudgetSummary from 'summary/BudgetSummary';
+import API from 'api/Rest';
+import Budget from 'budget/Budget';
+import UserSummary from 'summary/UserSummary';
 
 function App() {
   return (
@@ -34,14 +39,30 @@ function App() {
 
 function HomePage() {
   const [open, setOpen] = useState(false);
+  const [budget, setBudget] = useState<Budget|null>(null);
+  const [summary, setSummary] = useState(new UserSummary());
+  const [userBudgets, setUserBudgets] = useState<Budget[]>([]);
+  const [user, setUser] = useState<User|null>(Session.restoreUser());
 
-  const user: User = Session.restoreUser() ?? new User();
-  if (user.userID === null) {
+  useEffect(() => {
+    if (user == null) {
+      return;
+    }
+    const response = API.getUserSummary(user);
+    response.then(userSummary => {
+      const currentBudget = summary.budgets.find(x => x.budgetID == summary.currentBudgetID);
+      if (currentBudget) {
+        console.log('setting budget');
+        setBudget(currentBudget);
+      }
+      setUserBudgets(userSummary.budgets);
+      setSummary(userSummary);
+      console.log(userSummary);
+    }).catch(serverError => console.log(serverError));
+  }, [budget, summary]);
+
+  if (user === null) {
     return (<Navigate to="/login" />);
-  }
-
-  function handleExpand() {
-    setOpen(!open);
   }
 
   return (
@@ -96,58 +117,10 @@ function HomePage() {
           </List>
         </Collapse>
       </Card>
-      <List
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            Nested List Items from {user.fullName}
-          </ListSubheader>
-        }
-      >
-        <ListItem
-          secondaryAction={
-            <IconButton>
-              <AddOutlined />
-            </IconButton>
-          }
-        >
-          <ListItemButton>
-            <ListItemIcon>
-              <FactCheckOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Budget name" secondary="" />
-            <ExpandLess />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItemButton>
-          <ListItemIcon>
-            <Send />
-          </ListItemIcon>
-          <ListItemText primary="Sent mail" />
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemAvatar>
-            <Avatar>
-              <Work />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Work" secondary="Jan 7, 2014" />
-        </ListItemButton>
-        <ListItemButton onClick={handleExpand}>
-          <ListItemText primary="Inbox" />
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <StarBorder />
-              </ListItemIcon>
-              <ListItemText primary="Starred" />
-            </ListItemButton>
-          </List>
-        </Collapse>
-      </List>
+      
+      <SummaryCard 
+        budget={budget}
+        budgetData={summary.budgetSummary} />
     </Container>
   );
 }

@@ -31,11 +31,14 @@ class Service {
   setAuthorization(user: IUser) {
     const basic = Buffer.from((user.username + ":" + user.password)).toString('base64');
     this.headers.Authorization = "Basic " + basic;
-    user.password = "";
+    localStorage.setItem('auth-token', basic);
   }
 
   async request<TResponse>(requestURL: string, method: HTTP, body: any = undefined): Promise<TResponse> {
-    let url: string = new URL(requestURL, this.domain).href;
+    const url: string = new URL(requestURL, this.domain).href;
+    const auth = localStorage.getItem('auth-token');
+    this.headers.Authorization = "Basic " + (auth ?? "");
+
     if (body === undefined)
       body = "";
     else
