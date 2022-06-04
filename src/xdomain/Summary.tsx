@@ -1,20 +1,59 @@
 import { AppBar, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Collapse, Container, createTheme, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Stack, ThemeProvider, Toolbar, Typography } from '@mui/material';
 import { ExpandLess, ExpandMore, Send, StarBorder, Work, FactCheckOutlined, AddOutlined, Menu, EditOutlined, FactCheck } from '@mui/icons-material';
 import { useState } from 'react';
+import BudgetSummary from 'summary/BudgetSummary';
+import BudgetItem from 'budget/BudgetItem';
+import Budget from 'budget/Budget';
 
-interface Props {
-  title: string;
-  subtitle: string;
-  expandLabel: string;
+interface SummaryProps {
   onAdd?: () => void;
-  budgetData?: {};
+  budget: Budget | null;
+  budgetData: BudgetSummary | null;
 };
 
-function SummaryCard(props: Props) {
+interface ItemsProps {
+  budgetItems: BudgetItem[] | null | undefined;
+};
+
+function BudgetItemsList(props: ItemsProps) {
+  const budgetItems = props.budgetItems;
+  if (budgetItems == null || budgetItems.length <= 0) {
+    return (
+      <ListItem>
+        <ListItemText primary="No hay informacion disponible"/>
+      </ListItem>
+    );
+  }
+  return (
+    <div>
+      {budgetItems.map((budgetItem) => {
+        return (
+          <ListItemButton key={budgetItem.itemID}>
+            <ListItemText primary={budgetItem.concept} secondary="Category | Tag | Cuenta" />
+            <Chip label={budgetItem.amount} color="secondary" />
+          </ListItemButton>
+        );
+      })}
+    </div>
+  );
+}
+
+function SummaryCard(props: SummaryProps) {
   const [open, setOpen] = useState(false);
+  const budget = props.budget;
+
+  console.log("Rendering budget" + budget);
 
   const handleExpand = () => {
     setOpen(!open);
+  }
+
+  if (budget === null) {
+    return (
+      <Typography variant="h4" component="h2">
+        No budgets available
+      </Typography>
+    );
   }
 
   return (
@@ -32,10 +71,10 @@ function SummaryCard(props: Props) {
           }
           title={
             <Typography variant="h4" component="h2">
-              {props.title}
+              {budget.budgetName}
             </Typography>
           }
-          subheader={props.subtitle}
+          subheader={`Del ${budget.startDate} al ${budget.endDate}`}
         />
         <CardContent>
           <Stack direction="row" spacing="auto" component="span">
@@ -46,11 +85,17 @@ function SummaryCard(props: Props) {
           </Stack>
         </CardContent>
         <CardActions>
-          <Button onClick={handleExpand} size="small">{props.expandLabel}</Button>
+          <Button onClick={handleExpand} size="small">Detalles</Button>
         </CardActions>
 
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
+            <Divider textAlign="left">Mensuales</Divider>
+            <BudgetItemsList budgetItems={props.budgetData?.monthlyItems} />
+
+            <Divider textAlign="left">Extraordinarios</Divider>
+            <BudgetItemsList budgetItems={props.budgetData?.extraordinaryItems} />
+
             <Divider textAlign="left">25/Mayo/2022</Divider>
             <ListItemButton>
               <ListItemText primary="Concepto de transaccion" secondary="Category | Tag | Cuenta"/>
