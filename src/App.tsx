@@ -42,7 +42,7 @@ function HomePage() {
   const [budget, setBudget] = useState<Budget|null>(null);
   const [summary, setSummary] = useState(new UserSummary());
   const [userBudgets, setUserBudgets] = useState<Budget[]>([]);
-  const [user, setUser] = useState<User|null>(Session.restoreUser());
+  const user: User | null = Session.restoreUser();
 
   useEffect(() => {
     if (user == null) {
@@ -50,16 +50,15 @@ function HomePage() {
     }
     const response = API.getUserSummary(user);
     response.then(userSummary => {
-      const currentBudget = summary.budgets.find(x => x.budgetID == summary.currentBudgetID);
+      const currentBudget = userSummary.budgets.find(x => x.budgetID == userSummary.currentBudgetID);
       if (currentBudget) {
         console.log('setting budget');
         setBudget(currentBudget);
       }
       setUserBudgets(userSummary.budgets);
       setSummary(userSummary);
-      console.log(userSummary);
     }).catch(serverError => console.log(serverError));
-  }, [budget, summary]);
+  }, []);
 
   if (user === null) {
     return (<Navigate to="/login" />);
