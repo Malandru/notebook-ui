@@ -42,8 +42,6 @@ function SummaryCard(props: SummaryProps) {
   const [open, setOpen] = useState(false);
   const budget = props.budget;
 
-  console.log("Rendering budget" + budget);
-
   const handleExpand = () => {
     setOpen(!open);
   }
