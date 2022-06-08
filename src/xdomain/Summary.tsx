@@ -1,16 +1,9 @@
-import { AppBar, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Collapse, Container, createTheme, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Stack, ThemeProvider, Toolbar, Typography } from '@mui/material';
-import { ExpandLess, ExpandMore, Send, StarBorder, Work, FactCheckOutlined, AddOutlined, Menu, EditOutlined, FactCheck } from '@mui/icons-material';
+import { AppBar, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Collapse, Divider, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
+import { AddOutlined, FactCheck } from '@mui/icons-material';
 import { useState } from 'react';
 import BudgetSummary from 'summary/BudgetSummary';
 import BudgetItem from 'budget/BudgetItem';
 import Budget from 'budget/Budget';
-
-interface SummaryProps {
-  onAdd?: () => void;
-  budget: Budget | null;
-  budgetData: BudgetSummary | null;
-};
-
 interface ItemsProps {
   budgetItems: BudgetItem[] | null | undefined;
 };
@@ -37,6 +30,12 @@ function BudgetItemsList(props: ItemsProps) {
     </div>
   );
 }
+
+interface SummaryProps {
+  onAdd?: () => void;
+  budget: Budget | null;
+  budgetData: BudgetSummary | null;
+};
 
 function SummaryCard(props: SummaryProps) {
   const [open, setOpen] = useState(false);
@@ -93,21 +92,6 @@ function SummaryCard(props: SummaryProps) {
 
             <Divider textAlign="left">Extraordinarios</Divider>
             <BudgetItemsList budgetItems={props.budgetData?.extraordinaryItems} />
-
-            <Divider textAlign="left">25/Mayo/2022</Divider>
-            <ListItemButton>
-              <ListItemText primary="Concepto de transaccion" secondary="Category | Tag | Cuenta"/>
-              <Chip label="$50" color="secondary" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemText primary="Concepto de transaccion" secondary="Category | Tag | Cuenta"/>
-              <Chip label="$50" color="secondary" />
-            </ListItemButton>
-            <Divider textAlign="left">8/Mayo/2022</Divider>
-            <ListItemButton>
-              <ListItemText primary="Concepto de transaccion" secondary="Category | Tag | Cuenta"/>
-              <Chip label="$50" color="warning" />
-            </ListItemButton>
           </List>
         </Collapse>
       </Card>
