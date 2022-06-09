@@ -1,4 +1,5 @@
 import BudgetItem from "budget/BudgetItem";
+import Totals from "movement/Totals";
 
 class BudgetSummary {
   budgetName: string | null;
@@ -6,6 +7,7 @@ class BudgetSummary {
   endDate: Date | null;
   monthlyItems: BudgetItem[];
   extraordinaryItems: BudgetItem[];
+  totals: Totals | null;
   
   constructor() {
     this.budgetName = null;
@@ -13,6 +15,7 @@ class BudgetSummary {
     this.endDate = null;
     this.monthlyItems = [];
     this.extraordinaryItems = [];
+    this.totals = null;
   }
 }
 

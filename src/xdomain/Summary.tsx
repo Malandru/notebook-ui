@@ -4,6 +4,7 @@ import { useState } from 'react';
 import BudgetSummary from 'summary/BudgetSummary';
 import BudgetItem from 'budget/BudgetItem';
 import Budget from 'budget/Budget';
+import { currencyFormat } from './Utils';
 interface ItemsProps {
   budgetItems: BudgetItem[] | null | undefined;
 };
@@ -23,7 +24,7 @@ function BudgetItemsList(props: ItemsProps) {
         return (
           <ListItemButton key={budgetItem.itemID}>
             <ListItemText primary={budgetItem.concept} secondary="Category | Tag | Cuenta" />
-            <Chip label={budgetItem.amount} color="secondary" />
+            <Chip label={currencyFormat(budgetItem.amount)} color="secondary" />
           </ListItemButton>
         );
       })}
@@ -40,6 +41,8 @@ interface SummaryProps {
 function SummaryCard(props: SummaryProps) {
   const [open, setOpen] = useState(false);
   const budget = props.budget;
+  const budgetSummary = props.budgetData;
+  const totals = budgetSummary?.totals;
 
   const handleExpand = () => {
     setOpen(!open);
@@ -66,10 +69,10 @@ function SummaryCard(props: SummaryProps) {
         />
         <CardContent>
           <Stack direction="row" spacing="auto" component="span">
-            <Chip label="$1000" color="secondary" />
-            <Chip label="$200" color="warning" />
-            <Chip label="$1000" color="default" />
-            <Chip label="$800" color="primary" />
+            <Chip label={currencyFormat(totals?.totalIncomes)} color="secondary" />
+            <Chip label={currencyFormat(totals?.totalExpenses)} color="warning" />
+            <Chip label={currencyFormat(totals?.totalSavings)} color="default" />
+            <Chip label={currencyFormat(totals?.totalInvestments)} color="primary" />
           </Stack>
         </CardContent>
       </CardActionArea>
