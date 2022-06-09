@@ -66,7 +66,7 @@ function HomePage() {
   }
 
   return (
-    <Container component="main" maxWidth="md">
+    <Container component="main" maxWidth="sm">
       <EventNotification event={eventAlert} />
       
       {eventAlert.hasProgress(UI.LOADING) ? <Skeleton variant="rectangular"/>

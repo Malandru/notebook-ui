@@ -1,5 +1,5 @@
-import { AppBar, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Collapse, Divider, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
-import { AddOutlined, FactCheck } from '@mui/icons-material';
+import { AppBar, Avatar, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Chip, Collapse, Divider, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
+import { AddOutlined, EditOutlined, ExpandLess, ExpandMore, FactCheck } from '@mui/icons-material';
 import { useState } from 'react';
 import BudgetSummary from 'summary/BudgetSummary';
 import BudgetItem from 'budget/BudgetItem';
@@ -13,7 +13,7 @@ function BudgetItemsList(props: ItemsProps) {
   if (budgetItems == null || budgetItems.length <= 0) {
     return (
       <ListItem>
-        <ListItemText primary="No hay informacion disponible"/>
+        <ListItemText primary="No hay informacion disponible" />
       </ListItem>
     );
   }
@@ -55,17 +55,8 @@ function SummaryCard(props: SummaryProps) {
 
   return (
     <Card sx={{ marginTop: 2, marginBottom: 2 }}>
+      <CardActionArea onClick={handleExpand}>
         <CardHeader
-          avatar={
-            <Avatar>
-              <FactCheck />
-            </Avatar>
-          }
-          action={
-            <IconButton aria-label="edit">
-              <AddOutlined />
-            </IconButton>
-          }
           title={
             <Typography variant="h4" component="h2">
               {budget.budgetName}
@@ -81,20 +72,29 @@ function SummaryCard(props: SummaryProps) {
             <Chip label="$800" color="primary" />
           </Stack>
         </CardContent>
-        <CardActions>
-          <Button onClick={handleExpand} size="small">Detalles</Button>
-        </CardActions>
+      </CardActionArea>
+      <CardActions disableSpacing>
+        <IconButton aria-label="more" onClick={handleExpand}>
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </IconButton>
+        <IconButton aria-label="edit">
+          <EditOutlined />
+        </IconButton>
+        <IconButton aria-label="add" sx={{ marginLeft: 'auto' }}>
+          <AddOutlined />
+        </IconButton>
+      </CardActions>
 
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <Divider textAlign="left">Mensuales</Divider>
-            <BudgetItemsList budgetItems={props.budgetData?.monthlyItems} />
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <Divider textAlign="left">Mensuales</Divider>
+          <BudgetItemsList budgetItems={props.budgetData?.monthlyItems} />
 
-            <Divider textAlign="left">Extraordinarios</Divider>
-            <BudgetItemsList budgetItems={props.budgetData?.extraordinaryItems} />
-          </List>
-        </Collapse>
-      </Card>
+          <Divider textAlign="left">Extraordinarios</Divider>
+          <BudgetItemsList budgetItems={props.budgetData?.extraordinaryItems} />
+        </List>
+      </Collapse>
+    </Card>
   );
 }
 
