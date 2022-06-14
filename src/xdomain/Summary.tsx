@@ -4,7 +4,7 @@ import { useState } from 'react';
 import BudgetSummary from 'summary/BudgetSummary';
 import BudgetItem from 'budget/BudgetItem';
 import Budget from 'budget/Budget';
-import { currencyFormat } from './Utils';
+import { categoryColor, currencyFormat } from './Utils';
 interface ItemsProps {
   budgetItems: BudgetItem[] | null | undefined;
 };
@@ -24,7 +24,7 @@ function BudgetItemsList(props: ItemsProps) {
         return (
           <ListItemButton key={budgetItem.itemID}>
             <ListItemText primary={budgetItem.concept} secondary="Category | Tag | Cuenta" />
-            <Chip label={currencyFormat(budgetItem.amount)} color="secondary" />
+            <Chip label={currencyFormat(budgetItem.amount)} color={categoryColor(budgetItem.category)} />
           </ListItemButton>
         );
       })}

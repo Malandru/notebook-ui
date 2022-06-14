@@ -1,5 +1,7 @@
+import Category from "./Category";
+
 class Transaction {
-  category: string | null;
+  category: Category | null;
   concept: string | null;
   amount: number | null;
   tag: null;
