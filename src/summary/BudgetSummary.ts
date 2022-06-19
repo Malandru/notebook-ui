@@ -8,7 +8,7 @@ class BudgetSummary {
   monthlyItems: BudgetItem[];
   extraordinaryItems: BudgetItem[];
   totals: Totals | null;
-  
+
   constructor() {
     this.budgetName = null;
     this.startDate = null;

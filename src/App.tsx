@@ -4,14 +4,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from 'user/Login';
 import User from 'user/User';
 import Session from 'user/Session'
-import { AppBar, Container, IconButton, Skeleton, Toolbar, Typography } from '@mui/material';
+import { AppBar, CircularProgress, Container, IconButton, Toolbar, Typography } from '@mui/material';
 import { Menu } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
-import SummaryCard from 'xdomain/Summary';
 import API from 'api/Rest';
 import Budget from 'budget/Budget';
 import { EventAlert, EventNotification, UI } from 'xdomain/EventAlert';
 import UserSummary from 'summary/UserSummary';
+import BudgetSummaryCard from 'summary/BudgetSummaryCard';
 
 function App() {
   return (
@@ -38,7 +38,7 @@ function App() {
 }
 
 function HomePage() {
-  const [budget, setBudget] = useState<Budget|null>(null);
+  const [budget, setBudget] = useState<Budget | null>(null);
   const [userSummary, setUserSummary] = useState(new UserSummary());
   const [userBudgets, setUserBudgets] = useState<Budget[]>([]);
   const [eventAlert, setEventAlert] = useState(new EventAlert());
@@ -68,9 +68,9 @@ function HomePage() {
   return (
     <Container component="main" maxWidth="sm">
       <EventNotification event={eventAlert} />
-      
-      {eventAlert.hasProgress(UI.LOADING) ? <Skeleton variant="rectangular"/>
-      : <SummaryCard budget={budget} budgetData={userSummary.budgetSummary} />}
+
+      {eventAlert.hasProgress(UI.LOADING) ? <CircularProgress />
+        : <BudgetSummaryCard budget={budget} budgetSummary={userSummary.budgetSummary} />}
     </Container>
   );
 }
