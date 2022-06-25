@@ -16,4 +16,6 @@ class Transaction {
   }
 }
 
+export type ITransaction = Pick<Transaction, "category" | "concept" | "amount" | "tag">;
+
 export default Transaction;

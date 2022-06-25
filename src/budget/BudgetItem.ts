@@ -2,16 +2,18 @@ import Transaction from "movement/Transaction";
 
 class BudgetItem extends Transaction {
 
-  itemID: string | null;
+  budgetID: string | null;
   monthDay: number | null;
   yearDate: Date | null;
 
   constructor() {
     super();
-    this.itemID = null;
+    this.budgetID = null;
     this.monthDay = null;
     this.yearDate = null;
   }
 }
+
+export type BudgetItemForm = Pick<BudgetItem, "budgetID" | "monthDay" | "yearDate">;
 
 export default BudgetItem;

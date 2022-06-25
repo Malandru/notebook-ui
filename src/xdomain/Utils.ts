@@ -1,5 +1,11 @@
 import Category from "movement/Category";
 
+export function capitalize(str: string): string {
+  return str.toLowerCase().replace(/\b[a-z]/g, function (letter) {
+    return letter.toUpperCase();
+  });
+}
+
 export function currencyFormat(x: number | null | undefined): string {
   if (x == null) {
     return "$__.00";
@@ -13,7 +19,7 @@ export function categoryColor(category: Category | null): "default" | "secondary
     case Category.INCOME: return "secondary";
     case Category.SAVING: return "default";
     case Category.INVESTMENT: return "primary";
-  
+
     default: return "info";
-  }  
+  }
 }
