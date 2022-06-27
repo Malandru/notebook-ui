@@ -1,14 +1,17 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, InputAdornment, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { useState } from "react";
 import { capitalize } from "xdomain/Utils";
 import Category from "./Category";
 import { ITransaction } from "./Transaction";
 
 interface TransactionDialogProps {
-  onSubmit: () => void;
+  onSubmit: () => void,
+  children: JSX.Element,
 };
 
 function TransactionDialog(props: TransactionDialogProps) {
+  const { onSubmit, children } = props;
+  const [open, setOpen] = useState(true);
   const [transactionForm, setTransactionForm] = useState<ITransaction>({
     category: Category.INCOME,
     concept: null,
@@ -24,18 +27,18 @@ function TransactionDialog(props: TransactionDialogProps) {
   }
 
   return (
-    <Dialog open={true}>
+    <Dialog open={open}>
       <DialogTitle>Update this title</DialogTitle>
       <DialogContent>
         <DialogContentText>
           To add a new record, please fill the following fields
         </DialogContentText>
-        <Box component="form" onSubmit={props.onSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
           <FormControl fullWidth>
-            <InputLabel>Type</InputLabel>
+            <InputLabel>Category</InputLabel>
             <Select
               value={transactionForm.category as string}
-              label="Age"
+              label="Category"
               onChange={handleSelectChange}
             >
               <MenuItem value={Category.EXPENSE}>{capitalize(Category.EXPENSE)}</MenuItem>
@@ -58,17 +61,19 @@ function TransactionDialog(props: TransactionDialogProps) {
             margin="normal"
             required
             fullWidth
-            name="amount"
             label="Amount"
             type="number"
-            id="amount"
             onChange={e => transactionForm.amount = Number(e.target.value)}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">$</InputAdornment>
+            }}
           />
           <Divider />
+          {children}
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button>Cancel</Button>
+        <Button onClick={() => setOpen(false)}>Cancel</Button>
         <Button type="submit">Submit</Button>
       </DialogActions>
     </Dialog>
