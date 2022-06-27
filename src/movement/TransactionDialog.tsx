@@ -2,22 +2,18 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, D
 import { useState } from "react";
 import { capitalize } from "xdomain/Utils";
 import Category from "./Category";
-import { ITransaction } from "./Transaction";
+import { TransactionForm } from "./Transaction";
 
 interface TransactionDialogProps {
   onSubmit: () => void,
   children: JSX.Element,
+  transactionState: [TransactionForm, React.Dispatch<React.SetStateAction<TransactionForm>>],
 };
 
 function TransactionDialog(props: TransactionDialogProps) {
-  const { onSubmit, children } = props;
+  const { onSubmit, children, transactionState } = props;
   const [open, setOpen] = useState(true);
-  const [transactionForm, setTransactionForm] = useState<ITransaction>({
-    category: Category.INCOME,
-    concept: null,
-    amount: null,
-    tag: null
-  });
+  const [transactionForm, setTransactionForm] = transactionState;
 
   const handleSelectChange = (event: SelectChangeEvent) => {
     setTransactionForm({
@@ -74,7 +70,7 @@ function TransactionDialog(props: TransactionDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setOpen(false)}>Cancel</Button>
-        <Button type="submit">Submit</Button>
+        <Button onClick={onSubmit} type="submit">Submit</Button>
       </DialogActions>
     </Dialog>
   );

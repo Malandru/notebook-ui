@@ -1,7 +1,12 @@
-import { FormControl, Input, InputAdornment, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import API from "api/Rest";
+import ServerError from "api/ServerError";
+import Category from "movement/Category";
+import { TransactionForm } from "movement/Transaction";
 import TransactionDialog from "movement/TransactionDialog";
 import { useState } from "react";
 import Budget from "./Budget";
+import BudgetItem, { BudgetItemForm } from "./BudgetItem";
 
 const enum PeriodType {
   MONTHLY = "Every month",
@@ -15,10 +20,28 @@ interface BudgetItemDialogProps {
 function BudgetItemDialog(props: BudgetItemDialogProps) {
   const { budget } = props;
   const [periodType, setPeriodType] = useState<PeriodType>(PeriodType.MONTHLY);
+  const [transactionForm, setTransactionForm] = useState<TransactionForm>({
+    category: Category.EXPENSE,
+    concept: null,
+    amount: null,
+    tag: null
+  });
+
+  const budgetItemForm: BudgetItemForm = {
+    budgetID: budget.budgetID,
+    monthDay: null,
+    yearDate: new Date(),
+  };
+
+  const submitBudgetItemForm = () => {
+    const response = API.createBudgetItem(transactionForm, budgetItemForm);
+    response.then((budgetItem: BudgetItem) => console.log(budgetItem))
+      .catch((serverError: ServerError) => console.log(serverError));
+  }
 
   return (
     <>
-      <TransactionDialog onSubmit={() => { }} >
+      <TransactionDialog transactionState={[transactionForm, setTransactionForm]} onSubmit={submitBudgetItemForm} >
         <>
           <TextField
             margin="normal"
@@ -48,6 +71,7 @@ function BudgetItemDialog(props: BudgetItemDialogProps) {
               label="Month day"
               type="number"
               id="month-day"
+              onChange={e => budgetItemForm.monthDay = Number(e.target.value)}
             /> :
             <TextField
               margin="normal"
