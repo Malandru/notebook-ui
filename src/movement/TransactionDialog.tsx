@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, InputAdornment, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
-import { useState } from "react";
+import React from "react";
 import { capitalize } from "xdomain/Utils";
 import Category from "./Category";
 import { TransactionForm } from "./Transaction";
@@ -8,11 +8,12 @@ interface TransactionDialogProps {
   onSubmit: () => void,
   children: JSX.Element,
   transactionState: [TransactionForm, React.Dispatch<React.SetStateAction<TransactionForm>>],
+  openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>],
 };
 
 function TransactionDialog(props: TransactionDialogProps) {
-  const { onSubmit, children, transactionState } = props;
-  const [open, setOpen] = useState(true);
+  const { onSubmit, children, transactionState, openState } = props;
+  const [open, setOpen] = openState;
   const [transactionForm, setTransactionForm] = transactionState;
 
   const handleSelectChange = (event: SelectChangeEvent) => {
@@ -29,7 +30,7 @@ function TransactionDialog(props: TransactionDialogProps) {
         <DialogContentText>
           To add a new record, please fill the following fields
         </DialogContentText>
-        <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
           <FormControl fullWidth>
             <InputLabel>Category</InputLabel>
             <Select
@@ -69,7 +70,11 @@ function TransactionDialog(props: TransactionDialogProps) {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpen(false)}>Cancel</Button>
+        <Button
+          sx={{ marginRight: 'auto' }}
+          color="error"
+          onClick={() => setOpen(false)}
+        >Cancel</Button>
         <Button onClick={onSubmit} type="submit">Submit</Button>
       </DialogActions>
     </Dialog>

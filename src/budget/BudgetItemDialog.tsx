@@ -15,10 +15,11 @@ const enum PeriodType {
 
 interface BudgetItemDialogProps {
   budget: Budget,
+  openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>],
 };
 
 function BudgetItemDialog(props: BudgetItemDialogProps) {
-  const { budget } = props;
+  const { budget, openState } = props;
   const [periodType, setPeriodType] = useState<PeriodType>(PeriodType.MONTHLY);
   const [transactionForm, setTransactionForm] = useState<TransactionForm>({
     category: Category.EXPENSE,
@@ -41,7 +42,10 @@ function BudgetItemDialog(props: BudgetItemDialogProps) {
 
   return (
     <>
-      <TransactionDialog transactionState={[transactionForm, setTransactionForm]} onSubmit={submitBudgetItemForm} >
+      <TransactionDialog
+        transactionState={[transactionForm, setTransactionForm]}
+        openState={openState}
+        onSubmit={submitBudgetItemForm} >
         <>
           <TextField
             margin="normal"
@@ -65,7 +69,7 @@ function BudgetItemDialog(props: BudgetItemDialogProps) {
           {periodType === PeriodType.MONTHLY ?
             <TextField
               margin="normal"
-              required
+              required={periodType === PeriodType.MONTHLY}
               fullWidth
               name="month-day"
               label="Month day"
@@ -75,7 +79,7 @@ function BudgetItemDialog(props: BudgetItemDialogProps) {
             /> :
             <TextField
               margin="normal"
-              required
+              required={periodType === PeriodType.YEARLY}
               fullWidth
               name="year-date"
               label="Year date"

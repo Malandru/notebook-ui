@@ -15,12 +15,14 @@ interface SummaryProps {
   title: string | null,
   subheader: string,
   totals: Totals | null,
-  summaryList: Summary[]
+  summaryList: Summary[],
+  addState: [boolean, React.Dispatch<React.SetStateAction<boolean>>],
 };
 
 function SummaryCard(props: SummaryProps) {
   const [expand, setExpand] = useState(false);
-  const { title, subheader, totals, summaryList } = props;
+  const { title, subheader, totals, summaryList, addState } = props;
+  const [openAddDialog, setOpenAddDialog] = addState;
 
   const expandOnClick = () => {
     setExpand(!expand);
@@ -53,7 +55,10 @@ function SummaryCard(props: SummaryProps) {
         <IconButton aria-label="edit">
           <EditOutlined />
         </IconButton>
-        <IconButton aria-label="add" sx={{ marginLeft: 'auto' }}>
+        <IconButton
+          aria-label="add"
+          sx={{ marginLeft: 'auto' }}
+          onClick={() => setOpenAddDialog(true)}>
           <AddOutlined />
         </IconButton>
       </CardActions>
