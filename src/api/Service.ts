@@ -49,9 +49,15 @@ class Service {
     if (response.headers.get('Content-Type') === 'application/json') {
       return response.json()
         .then(data => new Promise((resolve, reject) => {
-          if (data instanceof ServerError)
+          const serverError: ServerError = new ServerError();
+          if (Object.keys(serverError).every((key) => data[key] !== undefined)) {
+            console.log("Rejecting promise response as ServerError");
             reject(data as ServerError);
-          resolve(data as TResponse);
+          }
+          else {
+            console.log("Resolving promise response as custom class");
+            resolve(data as TResponse);
+          }
         }));
     }
     else {
