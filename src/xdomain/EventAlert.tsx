@@ -44,7 +44,7 @@ export class EventAlert {
   }
 
   asServerError(serverError: ServerError) {
-    this.config(serverError.title, serverError.details, "error", true, UI.FAILED);
+    this.config(serverError.title ?? "", serverError.details ?? "", "error", true, UI.FAILED);
     return EventAlert.clone(this);
   }
 
@@ -61,7 +61,7 @@ export function EventNotification(props: Props) {
   const event = props.event;
 
   return (
-    <Snackbar open={event.display} anchorOrigin={{vertical: 'bottom', horizontal: 'left'}} autoHideDuration={5000}>
+    <Snackbar open={event.display} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} autoHideDuration={5000}>
       <Alert severity={event.severity}>
         <AlertTitle>{event.title}</AlertTitle>
         {event.details}
