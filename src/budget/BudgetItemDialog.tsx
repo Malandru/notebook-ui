@@ -5,6 +5,7 @@ import Category from "movement/Category";
 import { TransactionForm } from "movement/Transaction";
 import TransactionDialog from "movement/TransactionDialog";
 import { useState } from "react";
+import { Event, EventConf, EventNotification, EventType } from "xdomain/AlertEvent";
 import Budget from "./Budget";
 import BudgetItem, { BudgetItemForm } from "./BudgetItem";
 
@@ -21,6 +22,14 @@ interface BudgetItemDialogProps {
 function BudgetItemDialog(props: BudgetItemDialogProps) {
   const { budget, openState } = props;
   const [periodType, setPeriodType] = useState<PeriodType>(PeriodType.MONTHLY);
+  const [event, setEvent] = useState<Event>({
+    title: "",
+    details: "",
+    severity: "success",
+    display: false,
+    type: EventType.INITIAL
+  });
+
   const [transactionForm, setTransactionForm] = useState<TransactionForm>({
     category: Category.EXPENSE,
     concept: null,
@@ -35,13 +44,35 @@ function BudgetItemDialog(props: BudgetItemDialogProps) {
   };
 
   const submitBudgetItemForm = () => {
+    setEvent((prev) => { return { ...prev, type: EventType.LOADING } });
     const response = API.createBudgetItem(transactionForm, budgetItemForm);
-    response.then((budgetItem: BudgetItem) => console.log(budgetItem))
-      .catch((serverError: ServerError) => console.log(serverError));
+    response.then((budgetItem: BudgetItem) => {
+      console.log(budgetItem);
+      if (budgetItem.concept !== null) {
+        setEvent({
+          ...event,
+          title: "Budget Item created",
+          details: budgetItem.concept,
+          severity: "success",
+          display: true,
+          type: EventType.SUCCESS
+        });
+      }
+      else {
+        setEvent({
+          ...event,
+          title: "Error creating budget item",
+          details: "Failed to process response",
+          display: true,
+          type: EventType.FAILED
+        });
+      }
+    }).catch((serverError: ServerError) => setEvent(EventConf.configServerError(serverError)));
   }
 
   return (
     <>
+      <EventNotification event={event} />
       <TransactionDialog
         transactionState={[transactionForm, setTransactionForm]}
         openState={openState}
