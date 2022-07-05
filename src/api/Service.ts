@@ -34,7 +34,31 @@ class Service {
     localStorage.setItem('auth-token', basic);
   }
 
-  async request<TResponse>(requestURL: string, method: HTTP, body: any = undefined): Promise<TResponse> {
+  private async parseResponse<TResponse>(response: Response): Promise<TResponse> {
+    if (response.headers.get('Content-Type') === 'application/json') {
+      const data = await response.json();
+      return await new Promise((resolve, reject) => {
+        const serverError: ServerError = new ServerError();
+        if (Object.keys(serverError).every((key) => data[key] !== undefined)) {
+          console.log("Rejecting promise response as ServerError");
+          reject(data as ServerError);
+        }
+        else {
+          console.log("Resolving promise response as custom class");
+          resolve(data as TResponse);
+        }
+      });
+    }
+    else {
+      console.log("Rejecting promise as Unexpected response");
+      return Promise.reject(new ServerError(
+        "Error parsing response",
+        "Unexpected response from: " + response.url,
+        response.statusText, true));
+    }
+  }
+
+  private async request<TResponse>(requestURL: string, method: HTTP, body: any = undefined): Promise<TResponse> {
     const url: string = new URL(requestURL, this.domain).href;
     const auth = localStorage.getItem('auth-token');
     this.headers.Authorization = "Basic " + (auth ?? "");
@@ -45,26 +69,17 @@ class Service {
       body = JSON.stringify(body);
     const options = { headers: this.headers, method, body };
 
-    let response = await fetch(url, options);
-    if (response.headers.get('Content-Type') === 'application/json') {
-      return response.json()
-        .then(data => new Promise((resolve, reject) => {
-          const serverError: ServerError = new ServerError();
-          if (Object.keys(serverError).every((key) => data[key] !== undefined)) {
-            console.log("Rejecting promise response as ServerError");
-            reject(data as ServerError);
-          }
-          else {
-            console.log("Resolving promise response as custom class");
-            resolve(data as TResponse);
-          }
-        }));
-    }
-    else {
+    try {
+      const response: Response = await fetch(url, options);
+      return this.parseResponse<TResponse>(response);
+    } catch (e) {
+      const error = e as Error;
       return Promise.reject(new ServerError(
-        "Unexpected response " + response.status,
-        "Error fetching " + response.url,
-        response.statusText, true, ""));
+        "Fetch error: " + error.name,
+        error.message,
+        undefined,
+        false,
+        error.stack));
     }
   }
 
