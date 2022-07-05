@@ -23,15 +23,34 @@ export interface Event {
 export class EventConf {
   public static configServerError(serverError: ServerError): Event {
     if (serverError.displayMessage) {
+      console.log("DEBUG MESSAGE");
       console.log(serverError);
     }
     return {
-      title: serverError.title + " ==> " + serverError.httpStatus,
-      details: serverError.details,
+      title: serverError.title,
+      details: serverError.details + " ==> " + serverError.httpStatus,
       severity: "error",
       display: true,
       type: EventType.FAILED,
     };
+  }
+
+  public static configInitial(): Event {
+    return {
+      title: "",
+      details: "",
+      severity: "info",
+      display: false,
+      type: EventType.INITIAL
+    };
+  }
+
+  public static configLoading(prevEvent: Event): Event {
+    return {
+      ...prevEvent,
+      type: EventType.LOADING,
+      display: false
+    }
   }
 }
 
@@ -41,10 +60,13 @@ interface EventNotificationProps {
 
 export function EventNotification(props: EventNotificationProps) {
   const { event } = props;
-  const [open, setOpen] = useState(event.display);
+  const [open, setOpen] = useState(false);
 
   if (event.display && !open) {
     setOpen(true);
+  }
+  else if (!event.display && open) {
+    setOpen(false);
   }
 
   const handleCloseAlert = () => {

@@ -4,34 +4,31 @@ import API from 'api/Rest';
 import { IUser } from 'user/User'
 import { useNavigate } from 'react-router-dom';
 import { LockOutlined } from '@mui/icons-material';
-import { EventAlert, EventNotification, UI } from 'xdomain/EventAlert';
 import Session from 'user/Session';
+import { Event, EventConf, EventNotification, EventType } from 'xdomain/AlertEvent';
 
 function Login() {
-  const [formUser, setFormUser] = useState<IUser>({username: "", password: ""});
-  const [eventAlert, setEventAlert] = useState(new EventAlert());
+  const [formUser, setFormUser] = useState<IUser>({ username: "", password: "" });
+  const [event, setEvent] = useState<Event>(EventConf.configInitial());
   const navigate = useNavigate();
 
   function handleLogin(event: React.SyntheticEvent) {
     event.preventDefault();
     console.log(formUser);
 
-    setEventAlert(eventAlert.asChangedUI(UI.LOADING));
+    setEvent((prevEvent) => EventConf.configLoading(prevEvent));
     const response = API.login(formUser);
 
     response.then(user => {
       Session.storeUser(user);
       navigate('/');
     })
-      .catch(serverError => {
-        console.log(serverError);
-        setEventAlert( eventAlert.asServerError(serverError) );
-      });
+      .catch(serverError => setEvent(EventConf.configServerError(serverError)));
   }
 
   return (
     <ThemeProvider theme={createTheme()}>
-      <EventNotification event={eventAlert} />
+      <EventNotification event={event} />
       <Container component="main" maxWidth="xs">
         <Box className='AvatarBox'
           sx={{
@@ -72,14 +69,14 @@ function Login() {
               label="Remember me"
             />
             <Button
-              disabled={eventAlert.hasProgress(UI.LOADING)}
+              disabled={event.type === EventType.LOADING}
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >Sign In</Button>
 
-            {eventAlert.hasProgress(UI.LOADING) && <LinearProgress color="secondary" />}
+            {event.type === EventType.LOADING && <LinearProgress color="secondary" />}
             <Link href="#" variant="body2">
               {"Don't have an account? Sign Up"}
             </Link>

@@ -9,9 +9,9 @@ import { Menu } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import API from 'api/Rest';
 import Budget from 'budget/Budget';
-import { EventAlert, EventNotification, UI } from 'xdomain/EventAlert';
 import UserSummary from 'summary/UserSummary';
 import BudgetSummaryCard from 'summary/BudgetSummaryCard';
+import { Event, EventConf, EventNotification, EventType } from 'xdomain/AlertEvent';
 
 function App() {
   return (
@@ -41,14 +41,14 @@ function HomePage() {
   const [budget, setBudget] = useState<Budget | null>(null);
   const [userSummary, setUserSummary] = useState(new UserSummary());
   const [userBudgets, setUserBudgets] = useState<Budget[]>([]);
-  const [eventAlert, setEventAlert] = useState(new EventAlert());
+  const [event, setEvent] = useState<Event>(EventConf.configInitial());
   const user: User | null = Session.restoreUser();
 
   useEffect(() => {
     if (user == null) {
       return;
     }
-    setEventAlert(eventAlert.asChangedUI(UI.LOADING));
+    setEvent((prevEvent) => EventConf.configLoading(prevEvent));
     const response = API.getUserSummary(user);
     response.then(summary => {
       const currentBudget = summary.budgets.find(x => x.budgetID == summary.currentBudgetID);
@@ -57,8 +57,13 @@ function HomePage() {
       }
       setUserBudgets(summary.budgets);
       setUserSummary(summary);
-      setEventAlert(eventAlert.asChangedUI(UI.COMPLETE));
-    }).catch(serverError => setEventAlert(eventAlert.asServerError(serverError)));
+      setEvent((prevEvent) => ({
+        ...prevEvent,
+        severity: "success",
+        type: EventType.COMPLETE,
+        display: false,
+      }));
+    }).catch(serverError => setEvent(EventConf.configServerError(serverError)));
   }, []);
 
   if (user === null) {
@@ -67,9 +72,9 @@ function HomePage() {
 
   return (
     <Container component="main" maxWidth="sm">
-      <EventNotification event={eventAlert} />
+      <EventNotification event={event} />
 
-      {eventAlert.hasProgress(UI.LOADING) ? <CircularProgress />
+      {event.type === EventType.LOADING ? <CircularProgress />
         : <BudgetSummaryCard budget={budget} budgetSummary={userSummary.budgetSummary} />}
     </Container>
   );
