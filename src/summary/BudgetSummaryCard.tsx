@@ -1,5 +1,7 @@
 import { Typography } from "@mui/material";
 import Budget from "budget/Budget";
+import BudgetItemDialog from "budget/BudgetItemDialog";
+import { useState } from "react";
 import BudgetSummary from "./BudgetSummary";
 import SummaryCard, { Summary } from "./SummaryCard";
 
@@ -10,6 +12,7 @@ interface BudgetSummaryProps {
 
 function BudgetSummaryCard(props: BudgetSummaryProps) {
   const { budget, budgetSummary } = props;
+  const openBudgetItemDialogState = useState(false);
 
   if (budget === null) {
     return (
@@ -33,11 +36,15 @@ function BudgetSummaryCard(props: BudgetSummaryProps) {
   ];
 
   return (
-    <SummaryCard
-      title={budget.budgetName}
-      subheader={`Del ${budget.startDate} al ${budget.endDate}`}
-      totals={budgetSummary.totals}
-      summaryList={summaryList} />
+    <>
+      <BudgetItemDialog openState={openBudgetItemDialogState} budget={budget} />
+      <SummaryCard
+        title={budget.budgetName}
+        subheader={`Del ${budget.startDate} al ${budget.endDate}`}
+        totals={budgetSummary.totals}
+        summaryList={summaryList}
+        addState={openBudgetItemDialogState} />
+    </>
   );
 }
 

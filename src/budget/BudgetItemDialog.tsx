@@ -7,12 +7,7 @@ import TransactionDialog from "movement/TransactionDialog";
 import { useState } from "react";
 import { Event, EventConf, EventNotification, EventType } from "xdomain/AlertEvent";
 import Budget from "./Budget";
-import BudgetItem, { BudgetItemForm } from "./BudgetItem";
-
-const enum PeriodType {
-  MONTHLY = "Every month",
-  YEARLY = "Every year",
-};
+import BudgetItem, { BudgetItemForm, PeriodType } from "./BudgetItem";
 
 interface BudgetItemDialogProps {
   budget: Budget,
@@ -39,8 +34,9 @@ function BudgetItemDialog(props: BudgetItemDialogProps) {
 
   const budgetItemForm: BudgetItemForm = {
     budgetID: budget.budgetID,
+    periodType: periodType,
     monthDay: null,
-    yearDate: new Date(),
+    yearDate: null,
   };
 
   const submitBudgetItemForm = () => {
@@ -116,6 +112,7 @@ function BudgetItemDialog(props: BudgetItemDialogProps) {
               label="Year date"
               type="date"
               InputLabelProps={{ shrink: true }}
+              onChange={e => budgetItemForm.yearDate = new Date(e.target.value)}
             />
           }
         </>
