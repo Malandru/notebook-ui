@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Alert, AlertColor, AlertTitle, IconButton, Snackbar } from "@mui/material";
+import { Alert, AlertColor, AlertTitle, CircularProgress, IconButton, LinearProgress, Snackbar } from "@mui/material";
 import ServerError from "api/ServerError";
 import { useState } from "react";
 
@@ -35,7 +35,7 @@ export class EventConf {
     };
   }
 
-  public static configInitial(): Event {
+  public static initialize(): Event {
     return {
       title: "",
       details: "",
@@ -49,7 +49,26 @@ export class EventConf {
     return {
       ...prevEvent,
       type: EventType.LOADING,
-      display: false
+      display: true,
+      severity: "info",
+    }
+  }
+
+  public static configComplete(prevEvent: Event): Event {
+    return {
+      ...prevEvent,
+      type: EventType.COMPLETE,
+      display: false,
+      severity: "info",
+    }
+  }
+
+  public static configSuccess(prevEvent: Event): Event {
+    return {
+      ...prevEvent,
+      type: EventType.SUCCESS,
+      display: true,
+      severity: "success",
     }
   }
 }
@@ -61,6 +80,7 @@ interface EventNotificationProps {
 export function EventNotification(props: EventNotificationProps) {
   const { event } = props;
   const [open, setOpen] = useState(false);
+  const isLoading: boolean = event.type === EventType.LOADING;
 
   if (event.display && !open) {
     setOpen(true);
@@ -77,12 +97,12 @@ export function EventNotification(props: EventNotificationProps) {
   return (
     <Snackbar open={open}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      autoHideDuration={5000}
+      autoHideDuration={isLoading ? null : 5000}
       onClose={handleCloseAlert}
     >
       <Alert
         severity={event.severity}
-        action={
+        action={!isLoading &&
           <IconButton
             size="small"
             aria-label="close"
@@ -92,7 +112,7 @@ export function EventNotification(props: EventNotificationProps) {
             <Close fontSize="small" />
           </IconButton>}>
         <AlertTitle>{event.title}</AlertTitle>
-        {event.details}
+        {isLoading ? <CircularProgress /> : event.details}
       </Alert>
     </Snackbar>
   );

@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from 'user/Login';
 import User from 'user/User';
 import Session from 'user/Session'
-import { AppBar, CircularProgress, Container, IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, Container, IconButton, Toolbar, Typography } from '@mui/material';
 import { Menu } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import API from 'api/Rest';
@@ -41,7 +41,7 @@ function HomePage() {
   const [budget, setBudget] = useState<Budget | null>(null);
   const [userSummary, setUserSummary] = useState(new UserSummary());
   const [userBudgets, setUserBudgets] = useState<Budget[]>([]);
-  const [event, setEvent] = useState<Event>(EventConf.configInitial());
+  const [event, setEvent] = useState<Event>(EventConf.initialize());
   const user: User | null = Session.restoreUser();
 
   useEffect(() => {
@@ -51,18 +51,14 @@ function HomePage() {
     setEvent((prevEvent) => EventConf.configLoading(prevEvent));
     const response = API.getUserSummary(user);
     response.then(summary => {
+      setEvent((prevEvent) => EventConf.configComplete(prevEvent));
       const currentBudget = summary.budgets.find(x => x.budgetID == summary.currentBudgetID);
       if (currentBudget) {
         setBudget(currentBudget);
       }
       setUserBudgets(summary.budgets);
       setUserSummary(summary);
-      setEvent((prevEvent) => ({
-        ...prevEvent,
-        severity: "success",
-        type: EventType.COMPLETE,
-        display: false,
-      }));
+      setEvent((prevEvent) => EventConf.configSuccess({ ...prevEvent, title: "User summary", details: "Info downloaded" }));
     }).catch(serverError => setEvent(EventConf.configServerError(serverError)));
   }, []);
 
@@ -74,8 +70,8 @@ function HomePage() {
     <Container component="main" maxWidth="sm">
       <EventNotification event={event} />
 
-      {event.type === EventType.LOADING ? <CircularProgress />
-        : <BudgetSummaryCard budget={budget} budgetSummary={userSummary.budgetSummary} />}
+      {event.type !== EventType.LOADING &&
+        <BudgetSummaryCard budget={budget} budgetSummary={userSummary.budgetSummary} />}
     </Container>
   );
 }

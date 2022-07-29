@@ -8,8 +8,8 @@ import Session from 'user/Session';
 import { Event, EventConf, EventNotification, EventType } from 'xdomain/AlertEvent';
 
 function Login() {
-  const [formUser, setFormUser] = useState<IUser>({ username: "", password: "" });
-  const [event, setEvent] = useState<Event>(EventConf.configInitial());
+  const formUser: IUser = { username: "", password: "" };
+  const [event, setEvent] = useState<Event>(EventConf.initialize());
   const navigate = useNavigate();
 
   function handleLogin(event: React.SyntheticEvent) {
@@ -20,10 +20,10 @@ function Login() {
     const response = API.login(formUser);
 
     response.then(user => {
+      setEvent((prevEvent) => EventConf.configComplete(prevEvent));
       Session.storeUser(user);
       navigate('/');
-    })
-      .catch(serverError => setEvent(EventConf.configServerError(serverError)));
+    }).catch(serverError => setEvent(EventConf.configServerError(serverError)));
   }
 
   return (
@@ -75,8 +75,6 @@ function Login() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >Sign In</Button>
-
-            {event.type === EventType.LOADING && <LinearProgress color="secondary" />}
             <Link href="#" variant="body2">
               {"Don't have an account? Sign Up"}
             </Link>
